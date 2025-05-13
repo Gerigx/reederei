@@ -1,12 +1,14 @@
 package de.hsos.swa.Auftraege.Boundary.Rest;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.jboss.resteasy.reactive.RestResponse;
 
 import de.hsos.swa.Auftraege.Boundary.DTO.OrderDTO;
 import de.hsos.swa.Auftraege.Controller.OrderManager;
 import de.hsos.swa.Auftraege.Entity.Order;
+import de.hsos.swa.Flotten.Boundary.Response.ShipResponse;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -28,7 +30,11 @@ public class OrdersResource {
     @GET
     public RestResponse<Collection<OrderDTO>> getAllOrders(){
         Collection<Order> orders = orderManager.getAllOrders();
-        
+        Stream<OrderDTO> orderStream = orders.stream()
+            .map(p -> OrderDTO.from(p));
+
+
+        return RestResponse.ok(orderStream.toList());
     }
 
     @POST
