@@ -47,8 +47,6 @@ public class ShipRessource {
             throw new NotFoundException();
         }
 
-
-
         return RestResponse.ok(ShipResponse.from(ship));
     }
 
