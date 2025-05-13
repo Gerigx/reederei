@@ -3,6 +3,7 @@ package de.hsos.swa.Flotten.Gateway;
 import java.util.List;
 import java.util.Optional;
 
+
 import de.hsos.swa.Flotten.Entity.Ship;
 import de.hsos.swa.Flotten.Entity.ShipCatalog;
 import de.hsos.swa.Flotten.Entity.ShipState;
@@ -15,17 +16,18 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ShipRepository implements PanacheRepository<Ship>, ShipCatalog  {
 
-    // atomi long für ID
-
-
-
 
     @Override
     public Ship createShip(String name) {
         Ship ship = new Ship();
 
         ship.setName(name);
-        ship.setState(ShipState.FREE);
+
+        if (this.listAll().size() == 2) {
+            ship.setState(ShipState.BOOKED);
+        } else {
+            ship.setState(ShipState.FREE);
+        }       
 
         this.persist(ship);
 
@@ -43,45 +45,36 @@ public class ShipRepository implements PanacheRepository<Ship>, ShipCatalog  {
         return listAll();
     }
 
-    @Override
-    public List<Ship> getShipsByState(ShipState state) {
-        if (state == ShipState.BOOKED){
-            return findBooked();
-        }
-        return findFree();        
-    }
 
     @Override
     public Ship updateShip(long id, Ship ship) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateShip'");
+        Ship existingShip = this.getShip(id);
+
+        if (existingShip != null){
+            return null;
+        }
+
+        existingShip.setName(ship.getName());
+        existingShip.setState(ship.getState());
+        
+        return existingShip;
     }
 
     @Override
     public boolean deleteShip(long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteShip'");
+        boolean deleted = this.delete("id", id) > 0;
+        return deleted;
     }
 
     @Override
     public Optional<Ship> findFirstFreeShip() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findFirstFreeShip'");
+        List<Ship> allShips = this.getAllShips();
+        if (allShips.size() > 0) {
+            return allShips.stream().findFirst();
+        }
+        return null;
     }
 
-    // joa
-
-    public Ship findByName(String name){
-        return find("name", name).firstResult();
-    }
- 
-    public List<Ship> findFree(){
-        return list("status", ShipState.FREE);
-    }
-
-    public List<Ship> findBooked(){
-        return list("status", ShipState.BOOKED);
-    }
  
 
 }

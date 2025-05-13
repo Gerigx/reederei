@@ -17,7 +17,7 @@ import jakarta.transaction.Transactional;
 
 // muss das applschoped sein?
 @ApplicationScoped
-public class ShipManager implements ShipController {
+public class ShipService implements ShipController {
 
     @Inject
     ShipCatalog shipRepository;
@@ -48,6 +48,9 @@ public class ShipManager implements ShipController {
     @PostConstruct
     public void mockData(){
         createShip("MS Kevin");
+        createShip("MS KevinII");
+        createShip("MS KevinIII");
+        createShip("MS KevinIV");
     } 
 
     @Override
