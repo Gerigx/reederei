@@ -2,7 +2,7 @@ package de.hsos.swa.Flotten.Gateway;
 
 import java.util.List;
 import java.util.Optional;
-
+import java.util.concurrent.atomic.AtomicLong;
 
 import de.hsos.swa.Flotten.Entity.Ship;
 import de.hsos.swa.Flotten.Entity.ShipCatalog;
@@ -16,6 +16,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ShipRepository implements PanacheRepository<Ship>, ShipCatalog  {
 
+    private static final AtomicLong SHIP_ID_COUNTER = new AtomicLong(1);
 
     @Override
     public Ship createShip(String name) {

@@ -8,7 +8,7 @@ public interface ShipController {
     public void createShip(String name);
     public Ship getShip(long ID);
     public List<Ship> getAllShips();
-    public void updateShip(long ID);
+    public Ship updateShip(long ID, Ship ship);
     public void deleteShip(long ID);
 
 }

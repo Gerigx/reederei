@@ -71,15 +71,13 @@ public class ShipService implements ShipController {
     }
 
     @Override
-    public void updateShip(long ID) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateShip'");
+    public Ship updateShip(long ID, Ship ship) {
+        return shipRepository.updateShip(ID, ship);
     }
 
     @Override
     public void deleteShip(long ID) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteShip'");
+        shipRepository.deleteShip(ID);
     }
 
 }
