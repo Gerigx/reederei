@@ -3,6 +3,7 @@ package de.hsos.swa.Flotten.Controller;
 import java.util.List;
 import java.util.Optional;
 
+import de.hsos.swa.Auftraege.Controller.Events.NewOrderEvent;
 import de.hsos.swa.Flotten.Controller.Events.OrderAccepted;
 import de.hsos.swa.Flotten.Entity.Ship;
 import de.hsos.swa.Flotten.Entity.ShipCatalog;
@@ -26,17 +27,16 @@ public class ShipService implements ShipController {
     Event<OrderAccepted> orderAccepted;
 
 
-    public void onNewOrder(@Observes OrderAccepted event) {
-        // Freies Schiff mit Stream API finden
-        Optional<Ship> freiesSchiff = shipRepository.findFirstFreeShip();
+    public void onNewOrder(@Observes NewOrderEvent event) {
+        Optional<Ship> freeShip = shipRepository.findFirstFreeShip();
         
-        freiesSchiff.ifPresent(ship -> {
-
+        freeShip.ifPresent(ship -> {
             ship.setState(ShipState.BOOKED);
-            
             shipRepository.updateShip(ship.getID(), ship);
             
             orderAccepted.fire(new OrderAccepted(ship));
+            
+            System.out.println("Schiff " + ship.getName() + " wurde für Auftrag " + event.getOrderID() + " gebucht");
         });
     }
 

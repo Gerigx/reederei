@@ -10,4 +10,10 @@ public class OrderAccepted {
         this.ship = ship;
 
     }
+
+    public Ship getShip() {
+        return ship;
+    }
+
+    
 }
