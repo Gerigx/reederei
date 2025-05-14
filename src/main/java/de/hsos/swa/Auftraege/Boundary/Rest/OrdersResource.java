@@ -8,16 +8,18 @@ import org.jboss.resteasy.reactive.RestResponse;
 import de.hsos.swa.Auftraege.Boundary.DTO.OrderDTO;
 import de.hsos.swa.Auftraege.Controller.OrderManager;
 import de.hsos.swa.Auftraege.Entity.Order;
-import de.hsos.swa.Flotten.Boundary.Response.ShipResponse;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
+@Transactional
 @RequestScoped
 @Path("orders")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -38,4 +40,14 @@ public class OrdersResource {
     }
 
     @POST
+    public RestResponse<OrderDTO> createOrder(OrderDTO dto){
+        if (dto == null){
+            throw new NotFoundException();
+        }
+        Order order = new Order(dto);
+        
+        orderManager.createOrder(order);
+
+        return RestResponse.ok();
+    }
 }
