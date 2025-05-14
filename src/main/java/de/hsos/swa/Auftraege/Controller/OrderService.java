@@ -4,9 +4,10 @@ import java.util.List;
 
 import de.hsos.swa.Auftraege.Entity.Order;
 import de.hsos.swa.Auftraege.Entity.OrderCatalog;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-
+@ApplicationScoped
 public class OrderService implements OrderManager{
 
     @Inject

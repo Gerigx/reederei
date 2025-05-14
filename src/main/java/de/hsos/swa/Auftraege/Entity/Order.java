@@ -7,6 +7,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.CreationTimestamp;
 
 import de.hsos.swa.Auftraege.Boundary.DTO.OrderDTO;
+import de.hsos.swa.Auftraege.Boundary.DTO.OrderUpdateDTO;
 import jakarta.enterprise.inject.Vetoed;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -60,5 +61,12 @@ public class Order {
     }
 
     public Order() {
+    }
+
+    public Order(OrderUpdateDTO dto){
+        //this.date = dto.date;
+        this.description = dto.description;
+        this.ship = dto.ship;
+        this.Id = dto.Id;
     }
 }

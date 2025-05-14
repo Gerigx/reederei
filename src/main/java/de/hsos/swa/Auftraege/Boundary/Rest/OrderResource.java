@@ -43,7 +43,8 @@ public class OrderResource {
         if(Id != updatedOrder.Id){
             throw new BadRequestException();
         }
-        Order order = orderManager.updateOrder(updatedOrder);
+        Order order = new Order(updatedOrder); 
+        orderManager.updateOrder(order);
         if (order == null) {
             throw new NotFoundException();
         }
