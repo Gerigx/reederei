@@ -8,6 +8,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import de.hsos.swa.Auftraege.Boundary.DTO.OrderDTO;
 import de.hsos.swa.Auftraege.Controller.OrderManager;
 import de.hsos.swa.Auftraege.Entity.Order;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -20,7 +21,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
 @Transactional
-@RequestScoped
+@ApplicationScoped
 @Path("orders")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

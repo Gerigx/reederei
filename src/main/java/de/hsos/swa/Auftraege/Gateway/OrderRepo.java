@@ -5,12 +5,13 @@ import java.util.List;
 import de.hsos.swa.Auftraege.Entity.Order;
 import de.hsos.swa.Auftraege.Entity.OrderCatalog;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @Transactional
-@ApplicationScoped
+@RequestScoped
 public class OrderRepo implements OrderCatalog{
 
     @Inject
@@ -19,7 +20,9 @@ public class OrderRepo implements OrderCatalog{
     @Override
     public Order createOrder(Order order) {
         entityManager.persist(order);
+        entityManager.flush();
         entityManager.detach(order);
+        entityManager.clear();  
         return order;
     }
 
@@ -32,7 +35,11 @@ public class OrderRepo implements OrderCatalog{
 
     @Override
     public List<Order> getAllOrders() {
-        return entityManager.createQuery("SELECT orders FROM Order orders", Order.class).getResultList();
+        List<Order> orders = entityManager.createQuery("SELECT orders FROM Order orders", Order.class).getResultList();
+        for (Order order : orders) {
+            entityManager.detach(order);
+        }
+        return orders;
     }
 
     @Override

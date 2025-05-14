@@ -5,13 +5,12 @@ import java.util.Optional;
 
 public interface ShipCatalog {
 
-    public Ship createShip(String name); // Parameter hinzufügen
+    public Ship createShip(String name); 
     public Ship getShip(long id);
     public List<Ship> getAllShips();
-    public Ship updateShip(long id, Ship ship); // Parameter für neue Daten hinzufügen
+    public Ship updateShip(long id, Ship ship); 
     public boolean deleteShip(long id);
     
-    // Methode für die Stream API Anforderung
     public Optional<Ship> findFirstFreeShip();
 
 }

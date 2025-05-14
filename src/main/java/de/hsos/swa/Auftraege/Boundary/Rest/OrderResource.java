@@ -7,6 +7,7 @@ import de.hsos.swa.Auftraege.Boundary.DTO.OrderDTO;
 import de.hsos.swa.Auftraege.Boundary.DTO.OrderUpdateDTO;
 import de.hsos.swa.Auftraege.Controller.OrderManager;
 import de.hsos.swa.Auftraege.Entity.Order;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
@@ -20,7 +21,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-@RequestScoped
+@ApplicationScoped
 @Path("orders/{id}")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

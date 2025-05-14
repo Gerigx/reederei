@@ -28,29 +28,21 @@ public class ShipService implements ShipController {
 
 
     public void onNewOrder(@Observes NewOrderEvent event) {
-        Optional<Ship> freeShip = shipRepository.findFirstFreeShip();
+    long orderID = event.getOrderID();
+    Optional<Ship> freeShip = shipRepository.findFirstFreeShip();
+    
+    freeShip.ifPresent(ship -> {
+        ship.setState(ShipState.BOOKED);
+        shipRepository.updateShip(ship.getID(), ship);
         
-        freeShip.ifPresent(ship -> {
-            ship.setState(ShipState.BOOKED);
-            shipRepository.updateShip(ship.getID(), ship);
-            
-            orderAccepted.fire(new OrderAccepted(ship));
-            
-            System.out.println("Schiff " + ship.getName() + " wurde für Auftrag " + event.getOrderID() + " gebucht");
-        });
+        orderAccepted.fire(new OrderAccepted(ship, orderID)); 
+        
+        System.out.println("Schiff " + ship.getName() + " wurde für Auftrag " + orderID + " gebucht");
+    });
     }
 
 
 
-
-
-    @PostConstruct
-    public void mockData(){
-        createShip("MS Kevin");
-        createShip("MS KevinII");
-        createShip("MS KevinIII");
-        createShip("MS KevinIV");
-    } 
 
     @Override
     public void createShip(String name) {

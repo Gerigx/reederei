@@ -7,10 +7,13 @@ import java.util.List;
 
 import de.hsos.swa.Auftraege.Entity.Order;
 import de.hsos.swa.Auftraege.Entity.OrderCatalog;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import de.hsos.swa.Auftraege.Controller.Events.NewOrderEvent;
 import de.hsos.swa.Flotten.Controller.Events.OrderAccepted;
 import de.hsos.swa.Flotten.Entity.Ship;
@@ -24,40 +27,43 @@ public class OrderService implements OrderManager{
     @Inject
     Event<NewOrderEvent> newOrderEvent;
 
+
     @Override
     public void createOrder(Order order) {
         orderCatalog.createOrder(order);
         newOrderEvent.fire(new NewOrderEvent(order.getId()));
     }
 
+
     public void onOrderAccepted(@Observes OrderAccepted event) {
-        Ship ship = event.getShip();
+    Ship ship = event.getShip();
+    long orderID = event.getOrderID(); 
+    
+    if (ship == null || ship.getID() == 0L) {
+        System.out.println("Ungültiges Schiff!");
+        return;
+    }
+
+    URI shipUri;
+    try {
+        shipUri = new URI("/ship/" + ship.getID());
+        System.out.println("/ship/" + ship.getID());
+    } catch (URISyntaxException e) {
+        e.printStackTrace();
+        return;
+    }
+    
+    Order order = orderCatalog.getOrder(orderID);
+    
+    if (order != null) {
+        order.setShip(shipUri);
+        orderCatalog.updateOrder(order, orderID);
         
-        URI shipUri;
-        try {
-            shipUri = new URI("/ship/" + ship.getID());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return;
-        }
-        
-        List<Order> allOrder = orderCatalog.getAllOrders();
-        List<Order> shiplessOrder = new ArrayList<>();
-        
-        for (Order order : allOrder) {
-            if (order.getShip() == null) {
-                shiplessOrder.add(order);          
-            }            
-        }
-        
-        if (!shiplessOrder.isEmpty()) {
-            Order updatedOrder = shiplessOrder.get(0);
-            updatedOrder.setShip(shipUri);
-            orderCatalog.updateOrder(updatedOrder, updatedOrder.getId());
-            
-            System.out.println("Auftrag " + updatedOrder.getId() + 
-                            " wurde dem Schiff mit ID " + ship.getID() + " zugewiesen");
-        }
+        System.out.println("Auftrag " + orderID + 
+                        " wurde dem Schiff mit ID " + ship.getID() + " zugewiesen");
+    } else {
+        System.out.println("Auftrag mit ID " + orderID + " nicht gefunden!");
+    }
     }
 
     @Override
