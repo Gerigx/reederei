@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.common.util.RestMediaType;
 
+import de.hsos.swa.Flotten.Boundary.DTO.ShipDTO;
 import de.hsos.swa.Flotten.Boundary.Response.ShipResponse;
 import de.hsos.swa.Flotten.Controller.ShipController;
 import de.hsos.swa.Flotten.Entity.Ship;
@@ -22,6 +24,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -29,7 +32,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
-
+// Frage: Name oder shipDTO, geht ja beides
 
 @Path("/ships")
 @Produces({MediaType.APPLICATION_JSON, RestMediaType.APPLICATION_HAL_JSON})
@@ -67,7 +70,19 @@ public class ShipsRessource {
     }
 
     @POST
-    public RestResponse<ShipResponse> createShip(){
+    @APIResponse(responseCode = "201", description = "Ship created successfully")
+    @APIResponse(responseCode = "400", description = "Bad request")
+    @APIResponse(responseCode = "404", description = "Ship not found")
+    public RestResponse<ShipResponse> createShip(
+        ShipDTO shipDTO){
+
+        if (shipDTO == null) {
+            throw new NotFoundException();            
+        }
+
+        //Ship ship = new Ship();
+
+        this.shipController.createShip(shipDTO.getName());
 
         return RestResponse.ok();
     }

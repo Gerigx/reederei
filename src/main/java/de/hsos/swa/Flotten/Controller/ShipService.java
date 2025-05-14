@@ -31,12 +31,11 @@ public class ShipService implements ShipController {
         Optional<Ship> freiesSchiff = shipRepository.findFirstFreeShip();
         
         freiesSchiff.ifPresent(ship -> {
-            // Schiff als gebucht markieren
+
             ship.setState(ShipState.BOOKED);
-            // should i give my ship as param? I just could use my ID
+            
             shipRepository.updateShip(ship.getID(), ship);
             
-            // Neues Event auslösen
             orderAccepted.fire(new OrderAccepted(ship));
         });
     }
@@ -71,15 +70,13 @@ public class ShipService implements ShipController {
     }
 
     @Override
-    public void updateShip(long ID) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateShip'");
+    public Ship updateShip(long ID, Ship ship) {
+        return shipRepository.updateShip(ID, ship);
     }
 
     @Override
     public void deleteShip(long ID) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteShip'");
+        shipRepository.deleteShip(ID);
     }
 
 }
